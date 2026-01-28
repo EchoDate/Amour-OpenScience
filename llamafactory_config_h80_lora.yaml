@@ -1,0 +1,57 @@
+### model
+model_name_or_path: meta-llama/Meta-Llama-3.1-8B
+trust_remote_code: true
+flash_attn: fa2
+### method
+stage: sft
+do_train: true
+finetuning_type: lora
+### lora
+lora_target: all
+lora_rank: 64  # rank
+lora_alpha: 128  # alpha = 2 * rank，LoRA
+lora_dropout: 0.05
+### dataset
+dataset: amour_dataset_sharegpt  # （ShareGPT）
+dataset_dir: ./data/llamafactory  # 
+template: llama3  # llama3ShareGPT
+# ：Llama-Factory  llama3  labels masking：
+#   - system  tokens: labels = -100 ( loss )
+#   - human  tokens: labels = -100 ( loss )
+#   - observation  tokens: labels = -100 ( loss )
+#   - gpt/assistant  tokens: labels = token_ids ( loss )
+#    Assistant Output  tokens  loss 
+cutoff_len: 65536 # （，32,575 tokens）
+overwrite_cache: true
+preprocessing_num_workers: 4  # worker
+packing: false
+### output
+output_dir: ./checkpoints/llama3_1_8b_lora_64k
+logging_steps: 1
+save_steps: 100
+plot_loss: true
+overwrite_output_dir: true
+### train
+per_device_train_batch_size: 1  # LoRA，batch size
+gradient_accumulation_steps: 32  # batch size (2*16=32)
+gradient_checkpointing: true
+learning_rate: 1.0e-4  # LoRA
+num_train_epochs: 3
+lr_scheduler_type: cosine
+warmup_ratio: 0.05
+optim: adamw_torch
+weight_decay: 0.01
+max_grad_norm: 1.0
+bf16: true                      
+fp16: false
+ddp_timeout: 180000000
+### eval
+val_size: 0.05  #  10% （，）
+per_device_eval_batch_size: 1  # LoRAeval batch size
+eval_strategy: steps
+eval_steps: 200
+do_eval: true  # 
+### deepspeed
+deepspeed: deepspeed_config_2xh80_lora.json
+### wandb
+report_to: wandb

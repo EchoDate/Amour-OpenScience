@@ -1,0 +1,10 @@
+# Training dependencies
+torch>=2.0.0
+transformers>=4.40.0  # 4.40.0+  GenerationMixin 
+accelerate>=0.24.0
+datasets>=2.14.0
+tqdm>=4.66.0
+wandb>=0.15.0
+peft>=0.6.0  # ： LoRA 
+deepspeed>=0.12.0  # DeepSpeed ZeRO ，GPU
+
