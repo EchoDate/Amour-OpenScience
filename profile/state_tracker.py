@@ -1,6 +1,6 @@
 """
-State Tracker: 状态追踪器
-根据对话交互更新 V_emotion（情绪向量）
+State Tracker: State Tracker
+Update V_emotion (emotion vector) based on conversational interactions
 """
 
 from typing import Dict, Optional, Tuple
@@ -10,57 +10,57 @@ import re
 
 class StateTracker:
     """
-    状态追踪器：根据对话交互更新情绪向量
+    State Tracker: Update emotion vector based on conversational interactions
     
     Mechanism:
-    Input: 上一轮对话 + 当前环境事件
-    Process: 计算当前事件如何改变 V_emotion
-    Output: 更新后的 Profile 用于指导 Response 生成
+    Input: Previous round of dialogue + current environmental event
+    Process: Calculate how current event changes V_emotion
+    Output: Updated Profile for guiding Response generation
     """
     
     def __init__(self, profile: Profile, use_llm: bool = False, llm_model=None):
         """
-        初始化状态追踪器
+        Initialize state tracker
         
         Args:
-            profile: 要追踪的 Profile
-            use_llm: 是否使用 LLM 进行情绪分析（否则使用规则）
-            llm_model: LLM 模型（如果 use_llm=True）
+            profile: Profile to track
+            use_llm: Whether to use LLM for emotion analysis (otherwise use rules)
+            llm_model: LLM model (if use_llm=True)
         """
         self.profile = profile
         self.use_llm = use_llm
         self.llm_model = llm_model
-        self.last_thought = ""  # 存储最近的思考过程
+        self.last_thought = ""  # Store recent thought process
     
     def update_emotion(self, 
                       last_dialogue: str, 
                       current_event: str,
                       interaction_type: Optional[str] = None) -> Tuple[EmotionVector, str]:
         """
-        根据对话和事件更新情绪向量
+        Update emotion vector based on dialogue and events
         
         Args:
-            last_dialogue: 上一轮对话内容
-            current_event: 当前环境事件
-            interaction_type: 交互类型（如 "criticism", "praise", "conflict" 等）
+            last_dialogue: Previous round of dialogue content
+            current_event: Current environmental event
+            interaction_type: Interaction type (such as "criticism", "praise", "conflict", etc.)
         
         Returns:
-            (更新后的情绪向量, 思考过程) 元组
+            (Updated emotion vector, thought process) tuple
         """
         emotion = self.profile.emotion_vector
         
         if self.use_llm and self.llm_model:
-            # 使用 LLM 分析情绪变化
+            # Use LLM to analyze emotional changes
             updated_emotion, thought = self._update_with_llm(last_dialogue, current_event)
         else:
-            # 使用规则/关键词分析情绪变化
+            # Use rules/keywords to analyze emotional changes
             updated_emotion, thought = self._update_with_rules(last_dialogue, current_event, interaction_type)
         
-        # 应用更新
+        # Apply update
         self.profile.emotion_vector = updated_emotion
-        self.last_thought = thought  # 保存思考过程
+        self.last_thought = thought  # Save thought process
 
-        updated_emotion.clamp()  # 确保值在合理范围内
+        updated_emotion.clamp()  # Ensure values are in reasonable range
         
         return updated_emotion, thought
     
@@ -69,13 +69,13 @@ class StateTracker:
                           current_event: str,
                           interaction_type: Optional[str] = None) -> Tuple[EmotionVector, str]:
         """
-        使用规则更新情绪向量
+        Update emotion vector using rules
         
-        规则示例：
-        - 被批评/辱骂 -> Neuroticism 上升, Trust 下降
-        - 被表扬 -> Agreeableness 上升, Trust 上升
-        - 冲突 -> Stress 上升, Neuroticism 上升
-        - 友好互动 -> Trust 上升, Energy 上升
+        Rule examples:
+        - Being criticized/insulted -> Neuroticism increases, Trust decreases
+        - Being praised -> Agreeableness increases, Trust increases
+        - Conflict -> Stress increases, Neuroticism increases
+        - Friendly interaction -> Trust increases, Energy increases
         """
         emotion = EmotionVector(
             openness=self.profile.emotion_vector.openness,
@@ -88,10 +88,10 @@ class StateTracker:
             energy=self.profile.emotion_vector.energy
         )
         
-        # 合并对话和事件文本进行分析
+        # Merge dialogue and event text for analysis
         text = (last_dialogue + " " + current_event).lower()
         
-        # 检测负面情绪关键词
+        # Detect negative emotion keywords
         negative_keywords = [
             "stupid", "idiot", "wrong", "bad", "hate", "angry", "mad",
             "笨蛋", "白痴", "错误", "糟糕", "讨厌", "生气", "愤怒"
@@ -105,33 +105,33 @@ class StateTracker:
             "争吵", "争论", "不同意", "冲突", "反对"
         ]
         
-        # 计算关键词匹配
+        # Calculate keyword matching
         negative_count = sum(1 for kw in negative_keywords if kw in text)
         positive_count = sum(1 for kw in positive_keywords if kw in text)
         conflict_count = sum(1 for kw in conflict_keywords if kw in text)
         
-        # 根据匹配结果更新情绪
+        # Update emotions based on matching results
         if negative_count > 0:
-            # 被批评/辱骂
+            # Being criticized/insulted
             emotion.neuroticism += 0.1 * negative_count
             emotion.trust -= 0.1 * negative_count
             emotion.stress += 0.1 * negative_count
             emotion.agreeableness -= 0.05 * negative_count
         
         if positive_count > 0:
-            # 被表扬/友好互动
+            # Being praised/friendly interaction
             emotion.agreeableness += 0.1 * positive_count
             emotion.trust += 0.1 * positive_count
             emotion.energy += 0.1 * positive_count
             emotion.stress -= 0.05 * positive_count
         
         if conflict_count > 0:
-            # 冲突
+            # Conflict
             emotion.stress += 0.15 * conflict_count
             emotion.neuroticism += 0.1 * conflict_count
             emotion.trust -= 0.1 * conflict_count
         
-        # 如果提供了交互类型，直接应用
+        # If interaction type is provided, apply directly
         if interaction_type:
             if interaction_type == "criticism":
                 emotion.neuroticism += 0.2
@@ -150,32 +150,32 @@ class StateTracker:
                 emotion.energy += 0.15
                 emotion.agreeableness += 0.1
         
-        # 生成规则基础的思考过程
+        # Generate rule-based thought process
         thought_parts = []
         if negative_count > 0:
-            thought_parts.append(f"检测到 {negative_count} 个负面情绪关键词，这可能会增加神经质和压力，降低信任度。")
+            thought_parts.append(f"Detected {negative_count} negative emotion keywords, which may increase neuroticism and stress, reduce trust.")
         if positive_count > 0:
-            thought_parts.append(f"检测到 {positive_count} 个正面情绪关键词，这可能会增加亲和力和信任度，提升能量。")
+            thought_parts.append(f"Detected {positive_count} positive emotion keywords, which may increase agreeableness and trust, boost energy.")
         if conflict_count > 0:
-            thought_parts.append(f"检测到 {conflict_count} 个冲突关键词，这可能会增加压力和神经质，降低信任度。")
+            thought_parts.append(f"Detected {conflict_count} conflict keywords, which may increase stress and neuroticism, reduce trust.")
         if interaction_type:
-            thought_parts.append(f"交互类型为 {interaction_type}，应用相应的情绪变化规则。")
+            thought_parts.append(f"Interaction type is {interaction_type}, applying corresponding emotion change rules.")
         
-        thought = " ".join(thought_parts) if thought_parts else "使用规则方法分析情绪变化，未检测到明显的情绪触发词。"
+        thought = " ".join(thought_parts) if thought_parts else "Using rule-based method to analyze emotional changes, no obvious emotional trigger words detected."
         
         return emotion, thought
     
     def _update_with_llm(self, last_dialogue: str, current_event: str) -> Tuple[EmotionVector, str]:
         """
-        使用 LLM 分析情绪变化
+        Use LLM to analyze emotional changes
         
-        这个方法使用 LLM 来分析对话和事件对情绪的影响
-        先让 LLM 进行自然语言推理（thought），然后进行状态改变
+        This method uses LLM to analyze the impact of dialogue and events on emotions
+        Let LLM perform natural language reasoning (thought) first, then perform state changes
         """
-        # 获取当前情绪状态
+        # Get current emotional state
         current_emotion = self.profile.emotion_vector
         
-        # 构建 prompt - 要求 LLM 先给出思考过程，再给出状态变化
+        # Build prompt - require LLM to provide thought process first, then state changes
         system_message = "You are an expert at analyzing emotional states. Analyze how interactions affect emotional dimensions. First, provide your reasoning in natural language, then provide the emotional state changes."
         
         prompt = f"""Analyze how the following dialogue and event affect the emotional state.
@@ -235,57 +235,57 @@ CHANGES: {{
 Values should be between -1.0 and 1.0. Provide the THOUGHT first, then the CHANGES JSON object."""
 
         try:
-            # 调用 LLM
+            # Call LLM
             if hasattr(self.llm_model, 'generate'):
                 success, response = self.llm_model.generate(system_message, prompt)
                 if not success:
-                    # 如果 LLM 调用失败，回退到规则方法
+                    # If LLM call fails, fall back to rule-based method
                     return self._update_with_rules(last_dialogue, current_event, None)
             else:
-                # 如果 LLM 模型没有 generate 方法，尝试直接调用
+                # If LLM model doesn't have generate method, try direct call
                 try:
                     response = self.llm_model(prompt)
                     success = True
                 except Exception:
-                    # 如果调用失败，回退到规则方法
+                    # If call fails, fall back to rule-based method
                     return self._update_with_rules(last_dialogue, current_event, None)
             
             if not success:
                 return self._update_with_rules(last_dialogue, current_event, None)
             
-            # 解析 LLM 响应（提取 thought 和 JSON）
+            # Parse LLM response (extract thought and JSON)
             import json
             import re
             
-            # 提取 THOUGHT 部分
+            # Extract THOUGHT section
             thought = ""
             thought_match = re.search(r'THOUGHT:\s*(.+?)(?=CHANGES:|$)', response, re.DOTALL | re.IGNORECASE)
             if thought_match:
                 thought = thought_match.group(1).strip()
             else:
-                # 如果没有找到 THOUGHT 标记，尝试提取 CHANGES 之前的所有文本作为 thought
+                # If THOUGHT tag not found, try extracting all text before CHANGES as thought
                 changes_match = re.search(r'CHANGES:', response, re.IGNORECASE)
                 if changes_match:
                     thought = response[:changes_match.start()].strip()
-                    # 移除可能的标记
+                    # Remove possible tags
                     thought = re.sub(r'^(THOUGHT|thought|思考|推理):\s*', '', thought, flags=re.IGNORECASE)
                 else:
-                    thought = "LLM 分析了对话和事件对情绪的影响。"
+                    thought = "LLM analyzed the impact of dialogue and events on emotions."
             
-            # 尝试提取 JSON 对象
+            # Try to extract JSON object
             json_match = re.search(r'\{[^{}]*(?:\{[^{}]*\}[^{}]*)*\}', response, re.DOTALL)
             if json_match:
                 json_str = json_match.group(0)
                 try:
                     deltas = json.loads(json_str)
                 except json.JSONDecodeError:
-                    # 如果 JSON 解析失败，回退到规则方法
+                    # If JSON parsing fails, fall back to rule-based method
                     return self._update_with_rules(last_dialogue, current_event, None)
             else:
-                # 如果没有找到 JSON，回退到规则方法
+                # If no JSON found, fall back to rule-based method
                 return self._update_with_rules(last_dialogue, current_event, None)
             
-            # 应用变化
+            # Apply changes
             updated_emotion = EmotionVector(
                 openness=max(0.0, min(1.0, current_emotion.openness + deltas.get("openness", 0.0))),
                 conscientiousness=max(0.0, min(1.0, current_emotion.conscientiousness + deltas.get("conscientiousness", 0.0))),
@@ -300,16 +300,16 @@ Values should be between -1.0 and 1.0. Provide the THOUGHT first, then the CHANG
             return updated_emotion, thought
             
         except Exception as e:
-            # 如果出现任何错误，回退到规则方法
+            # If any error occurs, fall back to rule-based method
             import warnings
             warnings.warn(f"LLM-based emotion update failed: {e}. Falling back to rule-based method.")
             return self._update_with_rules(last_dialogue, current_event, None)
     
     def get_emotion_guidance(self) -> str:
         """
-        根据当前情绪状态生成响应风格指导
+        Generate response style guidance based on current emotional state
         
-        例如：如果 Neuroticism 高，回复应该更具防御性
+        For example: If Neuroticism is high, response should be more defensive
         """
         emotion = self.profile.emotion_vector
         guidance = []

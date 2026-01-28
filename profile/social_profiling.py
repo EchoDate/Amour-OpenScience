@@ -212,48 +212,48 @@ Respond with ONLY the JSON object, no other text."""
                                    interaction: str,
                                    interaction_type: Optional[str] = None) -> Relation:
         """
-        使用规则/关键词匹配更新关系（向后兼容方法）
+        Update relationship using rules/keyword matching (backward compatible method)
         
         Args:
-            relation: 当前关系对象
-            interaction: 交互内容
-            interaction_type: 交互类型（可选）
+            relation: Current relation object
+            interaction: Interaction content
+            interaction_type: Interaction type (optional)
         
         Returns:
-            更新后的关系对象
+            Updated relation object
         """
-        # 根据交互类型更新关系
+        # Update relationship based on interaction type
         if interaction_type:
             if interaction_type == "criticism":
-                # 被批评 -> 信任度下降，亲密度可能下降
+                # Being criticized -> trust decreases, intimacy may decrease
                 relation.trust -= 0.1
                 relation.intimacy -= 0.05
             elif interaction_type == "praise":
-                # 被表扬 -> 信任度和亲密度上升
+                # Being praised -> trust and intimacy increase
                 relation.trust += 0.1
                 relation.intimacy += 0.05
             elif interaction_type == "conflict":
-                # 冲突 -> 信任度下降，亲密度下降
+                # Conflict -> trust decreases, intimacy decreases
                 relation.trust -= 0.15
                 relation.intimacy -= 0.1
             elif interaction_type == "friendly":
-                # 友好互动 -> 信任度和亲密度上升
+                # Friendly interaction -> trust and intimacy increase
                 relation.trust += 0.1
                 relation.intimacy += 0.1
             elif interaction_type == "help":
-                # 帮助 -> 信任度上升
+                # Help -> trust increases
                 relation.trust += 0.15
                 relation.intimacy += 0.05
             elif interaction_type == "betrayal":
-                # 背叛 -> 信任度大幅下降
+                # Betrayal -> trust sharply decreases
                 relation.trust -= 0.3
                 relation.intimacy -= 0.2
         
-        # 基于交互文本分析（如果未提供类型）
+        # Analyze based on interaction text (if type not provided)
         else:
             interaction_lower = interaction.lower()
             
-            # 检测关键词
+            # Detect keywords
             if any(kw in interaction_lower for kw in ["thank", "appreciate", "help", "谢谢", "感谢", "帮助"]):
                 relation.trust += 0.05
                 relation.intimacy += 0.03
@@ -267,22 +267,22 @@ Respond with ONLY the JSON object, no other text."""
     
     def get_relation_constraint_prompt(self, agent_id: str) -> str:
         """
-        生成关系约束的 prompt 片段
+        Generate relationship constraint prompt fragment
         
-        例如："Based on your current Profile, you have very low trust but high intimacy with Agent B (possibly a toxic friend).
+        Example: "Based on your current Profile, you have very low trust but high intimacy with Agent B (possibly a toxic friend).
               Please respond under this relationship constraint."
         
         Args:
-            agent_id: 目标 Agent ID
+            agent_id: Target Agent ID
         
         Returns:
-            关系约束的文本描述
+            Text description of relationship constraints
         """
         relation = self.profile.get_relation(agent_id)
         
         constraints = []
         
-        # 信任度描述
+        # Trust description
         if relation.trust < 0.3:
             constraints.append("very low trust")
         elif relation.trust < 0.5:
@@ -292,7 +292,7 @@ Respond with ONLY the JSON object, no other text."""
         else:
             constraints.append("moderate trust")
         
-        # 亲密度描述
+        # Intimacy description
         if relation.intimacy < -0.5:
             constraints.append("distant relationship")
         elif relation.intimacy < 0:
@@ -302,7 +302,7 @@ Respond with ONLY the JSON object, no other text."""
         elif relation.intimacy > 0:
             constraints.append("relatively intimate relationship")
         
-        # 支配度描述
+        # Dominance description
         if relation.dominance > 0.5:
             constraints.append("you dominate in the relationship")
         elif relation.dominance < -0.5:
@@ -310,8 +310,8 @@ Respond with ONLY the JSON object, no other text."""
         else:
             constraints.append("relatively equal relationship")
         
-        # 生成关系类型判断
-        # 优先使用显式设置的关系类型，否则推断
+        # Generate relationship type judgment
+        # Prioritize explicitly set relationship type, otherwise infer
         relation_type = relation.relation_type or self._infer_relation_type(relation)
         
         prompt = f"Based on your current Profile, you have "
@@ -325,24 +325,24 @@ Respond with ONLY the JSON object, no other text."""
     
     def _infer_relation_type(self, relation: Relation) -> Optional[str]:
         """
-        根据关系维度推断关系类型
+        Infer relationship type based on relationship dimensions
         
         Returns:
-            关系类型描述，如 "toxic_friend", "close_friend", "rival" 等
+            Relationship type description, such as "toxic_friend", "close_friend", "rival", etc.
         """
-        # 高亲密度 + 低信任度 = 损友
+        # High intimacy + low trust = toxic friend
         if relation.intimacy > 0.5 and relation.trust < 0.3:
             return "toxic_friend"
         
-        # 高亲密度 + 高信任度 = 密友
+        # High intimacy + high trust = close friend
         if relation.intimacy > 0.5 and relation.trust > 0.7:
             return "close_friend"
         
-        # 低亲密度 + 低信任度 = 对手/敌人
+        # Low intimacy + low trust = rival/enemy
         if relation.intimacy < -0.3 and relation.trust < 0.3:
             return "rival"
         
-        # 高信任度 + 中等亲密度 = 合作伙伴
+        # High trust + moderate intimacy = partner
         if relation.trust > 0.7 and -0.3 < relation.intimacy < 0.5:
             return "partner"
         
@@ -350,10 +350,10 @@ Respond with ONLY the JSON object, no other text."""
     
     def get_all_relations_summary(self) -> str:
         """
-        获取所有关系的摘要
+        Get summary of all relationships
         
         Returns:
-            所有关系的文本描述
+            Text description of all relationships
         """
         if not self.profile.relations:
             return "No relationship records"
@@ -372,11 +372,11 @@ Respond with ONLY the JSON object, no other text."""
     
     def set_relation_type(self, agent_id: str, relation_type: Optional[str]):
         """
-        设置与指定 Agent 的关系类型
+        Set relationship type with specified Agent
         
         Args:
-            agent_id: 目标 Agent 的 ID
-            relation_type: 关系类型（如 "ex", "teacher_student", "lover" 等），或 None 表示清除
+            agent_id: Target Agent ID
+            relation_type: Relationship type (such as "ex", "teacher_student", "lover", etc.), or None to clear
         """
         relation = self.profile.get_relation(agent_id)
         relation.set_relation_type(relation_type)
