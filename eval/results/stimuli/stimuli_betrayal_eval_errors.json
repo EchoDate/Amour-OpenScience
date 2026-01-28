@@ -1,0 +1,202 @@
+[
+  {
+    "conversation_id": "3",
+    "error": "对话 3 缺少 human 消息，无法进行推理"
+  },
+  {
+    "conversation_id": "7",
+    "error": "对话 7 缺少 human 消息，无法进行推理"
+  },
+  {
+    "conversation_id": "4",
+    "error": "对话 4 缺少 human 消息，无法进行推理"
+  },
+  {
+    "conversation_id": "9",
+    "error": "对话 9 缺少 human 消息，无法进行推理"
+  },
+  {
+    "conversation_id": "6",
+    "error": "对话 6 缺少 human 消息，无法进行推理"
+  },
+  {
+    "conversation_id": "2",
+    "error": "对话 2 缺少 human 消息，无法进行推理"
+  },
+  {
+    "conversation_id": "1",
+    "error": "对话 1 缺少 human 消息，无法进行推理"
+  },
+  {
+    "conversation_id": "5",
+    "error": "对话 5 缺少 human 消息，无法进行推理"
+  },
+  {
+    "conversation_id": "10",
+    "error": "对话 10 缺少 human 消息，无法进行推理"
+  },
+  {
+    "conversation_id": "8",
+    "error": "对话 8 缺少 human 消息，无法进行推理"
+  },
+  {
+    "conversation_id": "14",
+    "error": "对话 14 缺少 human 消息，无法进行推理"
+  },
+  {
+    "conversation_id": "15",
+    "error": "对话 15 缺少 human 消息，无法进行推理"
+  },
+  {
+    "conversation_id": "12",
+    "error": "对话 12 缺少 human 消息，无法进行推理"
+  },
+  {
+    "conversation_id": "11",
+    "error": "对话 11 缺少 human 消息，无法进行推理"
+  },
+  {
+    "conversation_id": "17",
+    "error": "对话 17 缺少 human 消息，无法进行推理"
+  },
+  {
+    "conversation_id": "16",
+    "error": "对话 16 缺少 human 消息，无法进行推理"
+  },
+  {
+    "conversation_id": "19",
+    "error": "对话 19 缺少 human 消息，无法进行推理"
+  },
+  {
+    "conversation_id": "13",
+    "error": "对话 13 缺少 human 消息，无法进行推理"
+  },
+  {
+    "conversation_id": "20",
+    "error": "对话 20 缺少 human 消息，无法进行推理"
+  },
+  {
+    "conversation_id": "18",
+    "error": "对话 18 缺少 human 消息，无法进行推理"
+  },
+  {
+    "conversation_id": "27",
+    "error": "对话 27 缺少 human 消息，无法进行推理"
+  },
+  {
+    "conversation_id": "24",
+    "error": "对话 24 缺少 human 消息，无法进行推理"
+  },
+  {
+    "conversation_id": "26",
+    "error": "对话 26 缺少 human 消息，无法进行推理"
+  },
+  {
+    "conversation_id": "21",
+    "error": "对话 21 缺少 human 消息，无法进行推理"
+  },
+  {
+    "conversation_id": "22",
+    "error": "对话 22 缺少 human 消息，无法进行推理"
+  },
+  {
+    "conversation_id": "25",
+    "error": "对话 25 缺少 human 消息，无法进行推理"
+  },
+  {
+    "conversation_id": "23",
+    "error": "对话 23 缺少 human 消息，无法进行推理"
+  },
+  {
+    "conversation_id": "33",
+    "error": "对话 33 缺少 human 消息，无法进行推理"
+  },
+  {
+    "conversation_id": "28",
+    "error": "对话 28 缺少 human 消息，无法进行推理"
+  },
+  {
+    "conversation_id": "30",
+    "error": "对话 30 缺少 human 消息，无法进行推理"
+  },
+  {
+    "conversation_id": "35",
+    "error": "对话 35 缺少 human 消息，无法进行推理"
+  },
+  {
+    "conversation_id": "32",
+    "error": "对话 32 缺少 human 消息，无法进行推理"
+  },
+  {
+    "conversation_id": "31",
+    "error": "对话 31 缺少 human 消息，无法进行推理"
+  },
+  {
+    "conversation_id": "29",
+    "error": "对话 29 缺少 human 消息，无法进行推理"
+  },
+  {
+    "conversation_id": "38",
+    "error": "对话 38 缺少 human 消息，无法进行推理"
+  },
+  {
+    "conversation_id": "36",
+    "error": "对话 36 缺少 human 消息，无法进行推理"
+  },
+  {
+    "conversation_id": "34",
+    "error": "对话 34 缺少 human 消息，无法进行推理"
+  },
+  {
+    "conversation_id": "40",
+    "error": "对话 40 缺少 human 消息，无法进行推理"
+  },
+  {
+    "conversation_id": "37",
+    "error": "对话 37 缺少 human 消息，无法进行推理"
+  },
+  {
+    "conversation_id": "41",
+    "error": "对话 41 缺少 human 消息，无法进行推理"
+  },
+  {
+    "conversation_id": "43",
+    "error": "对话 43 缺少 human 消息，无法进行推理"
+  },
+  {
+    "conversation_id": "39",
+    "error": "对话 39 缺少 human 消息，无法进行推理"
+  },
+  {
+    "conversation_id": "42",
+    "error": "对话 42 缺少 human 消息，无法进行推理"
+  },
+  {
+    "conversation_id": "45",
+    "error": "对话 45 缺少 human 消息，无法进行推理"
+  },
+  {
+    "conversation_id": "46",
+    "error": "对话 46 缺少 human 消息，无法进行推理"
+  },
+  {
+    "conversation_id": "47",
+    "error": "对话 47 缺少 human 消息，无法进行推理"
+  },
+  {
+    "conversation_id": "50",
+    "error": "对话 50 缺少 human 消息，无法进行推理"
+  },
+  {
+    "conversation_id": "49",
+    "error": "对话 49 缺少 human 消息，无法进行推理"
+  },
+  {
+    "conversation_id": "44",
+    "error": "对话 44 缺少 human 消息，无法进行推理"
+  },
+  {
+    "conversation_id": "48",
+    "error": "对话 48 缺少 human 消息，无法进行推理"
+  }
+]

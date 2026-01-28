@@ -1,0 +1,123 @@
+{
+  "total_conversations": 50,
+  "state_delta_statistics": {
+    "stress": {
+      "mean": 0.007349999999999979,
+      "std": 0.028870226878221796,
+      "min": -0.063,
+      "max": 0.047250000000000014,
+      "median": 0.01574999999999993
+    },
+    "trust": {
+      "mean": 0.004619999999999983,
+      "std": 0.018286486814038386,
+      "min": -0.034999999999999976,
+      "max": 0.03500000000000003,
+      "median": 0.010499999999999954
+    },
+    "dominance": {
+      "mean": 0.0054600000000000004,
+      "std": 0.02842689571514976,
+      "min": -0.063,
+      "max": 0.06299999999999994,
+      "median": 0.0
+    },
+    "focus": {
+      "mean": 0.007980000000000001,
+      "std": 0.025161470545260262,
+      "min": -0.063,
+      "max": 0.06299999999999994,
+      "median": 0.0
+    }
+  },
+  "state_plan_distribution": {
+    "stress": {
+      "increase a lot": 12,
+      "increase a little": 14,
+      "stable": 8,
+      "decrease a little": 14,
+      "decrease a lot": 2
+    },
+    "trust": {
+      "increase a lot": 6,
+      "increase a little": 25,
+      "stable": 10,
+      "decrease a little": 3,
+      "decrease a lot": 6
+    },
+    "dominance": {
+      "increase a lot": 4,
+      "increase a little": 18,
+      "stable": 19,
+      "decrease a little": 5,
+      "decrease a lot": 4
+    },
+    "focus": {
+      "increase a lot": 4,
+      "increase a little": 19,
+      "stable": 19,
+      "decrease a little": 6,
+      "decrease a lot": 2
+    }
+  },
+  "raw_state_plan_values": {
+    "stress": [
+      "decrease a little",
+      "decrease a lot",
+      "increase a little",
+      "increase a lot",
+      "stable"
+    ],
+    "trust": [
+      "decrease a little",
+      "decrease a lot",
+      "increase a little",
+      "increase a lot",
+      "stable"
+    ],
+    "dominance": [
+      "decrease a little",
+      "decrease a lot",
+      "increase a little",
+      "increase a lot",
+      "stable"
+    ],
+    "focus": [
+      "decrease a little",
+      "decrease a lot",
+      "increase a little",
+      "increase a lot",
+      "stable"
+    ]
+  },
+  "overall_trends": {
+    "stress": {
+      "increase": 26,
+      "decrease": 16,
+      "stable": 8,
+      "increase_percentage": "52.00%",
+      "decrease_percentage": "32.00%"
+    },
+    "trust": {
+      "increase": 31,
+      "decrease": 9,
+      "stable": 10,
+      "increase_percentage": "62.00%",
+      "decrease_percentage": "18.00%"
+    },
+    "dominance": {
+      "increase": 22,
+      "decrease": 9,
+      "stable": 19,
+      "increase_percentage": "44.00%",
+      "decrease_percentage": "18.00%"
+    },
+    "focus": {
+      "increase": 23,
+      "decrease": 8,
+      "stable": 19,
+      "increase_percentage": "46.00%",
+      "decrease_percentage": "16.00%"
+    }
+  }
+}

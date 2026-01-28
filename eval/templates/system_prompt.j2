@@ -1,0 +1,25 @@
+Scenario:{% if scenario %}
+{{ scenario }}{% else %}
+{% endif %}
+Topic: {{ topic }}
+
+Character Information:
+{% if your_character_info %}
+{% set char_info = your_character_info %}
+{% if char_info.name %}- Your name: {{ char_info.name }}
+{% endif %}{% if char_info.occupation %}- Your occupation: {{ char_info.occupation }}
+{% endif %}{% if char_info.personality %}- Your personality: {{ char_info.personality }}
+{% endif %}{% if char_info.talking_style %}- Your talking style: {{ char_info.talking_style }}
+{% endif %}{% endif %}
+{% if other_character_info %}
+{% set other_info = other_character_info %}
+{% if other_info.name %}- Other person's name: {{ other_info.name }}
+{% endif %}{% endif %}
+
+Based on the scenario information, your character information, and observed information, generate the following in each turn:
+1. State update (JSON format): emotion and relation
+2. Thought chain ([Internal Monologue]): Analyze the current situation and thinking process
+   - Observation Analysis: Analyze the other person's words, tone, and intentions
+   - Self-Reflection: Reflect on your own feelings, thoughts, and position
+   - State Update Plan: Explain why the emotion and relation states are set this way
+3. Response ([Response]): The actual dialogue content (translated to English if original is in another language).

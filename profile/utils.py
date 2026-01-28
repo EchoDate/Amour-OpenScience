@@ -71,14 +71,14 @@ def create_profile_from_annotator_data(profile_data: Dict[str, Any]) -> Profile:
 
 def _initialize_emotion_from_mbti(emotion: EmotionVector, mbti: str) -> EmotionVector:
     """
-    根据 MBTI 类型初始化情绪向量
+    Initialize emotion vector based on MBTI type
     
     Args:
-        emotion: 情绪向量对象
-        mbti: MBTI 类型（如 "INTJ", "ENFP" 等）
+        emotion: Emotion vector object
+        mbti: MBTI type (such as "INTJ", "ENFP", etc.)
     
     Returns:
-        更新后的情绪向量
+        Updated emotion vector
     """
     if not mbti or len(mbti) < 4:
         return emotion
@@ -114,17 +114,17 @@ def _initialize_emotion_from_mbti(emotion: EmotionVector, mbti: str) -> EmotionV
 
 def extract_agent_id_from_text(text: str) -> Optional[str]:
     """
-    从文本中提取 Agent ID
+    Extract Agent ID from text
     
     Args:
-        text: 包含 Agent ID 的文本
+        text: Text containing Agent ID
     
     Returns:
-        Agent ID 或 None
+        Agent ID or None
     """
     import re
     
-    # 尝试匹配常见的 Agent ID 格式
+    # Try to match common Agent ID formats
     patterns = [
         r'Agent\s+([A-Z])',  # "Agent A"
         r'Character\s+([A-Z])',  # "Character A"
@@ -142,58 +142,58 @@ def extract_agent_id_from_text(text: str) -> Optional[str]:
 
 def detect_interaction_type(text: str, llm_model=None) -> Optional[str]:
     """
-    检测交互类型
+    Detect interaction type
     
-    如果提供了 LLM 模型，使用 LLM 来判断交互类型；否则使用关键词匹配。
+    If LLM model is provided, use LLM to judge interaction type; otherwise use keyword matching.
     
     Args:
-        text: 交互文本
-        llm_model: LLM 模型（可选），如果提供则使用 LLM 判断
+        text: Interaction text
+        llm_model: LLM model (optional), if provided use LLM for judgment
     
     Returns:
-        交互类型（如 "criticism", "praise", "conflict", "friendly", "help", "betrayal" 等）或 None
+        Interaction type (such as "criticism", "praise", "conflict", "friendly", "help", "betrayal", etc.) or None
     """
-    # 如果提供了 LLM 模型，使用 LLM 判断
+    # If LLM model is provided, use LLM for judgment
     if llm_model is not None:
         return _detect_interaction_type_with_llm(text, llm_model)
     
-    # 否则使用关键词匹配（向后兼容）
+    # Otherwise use keyword matching (backward compatible)
     return _detect_interaction_type_with_keywords(text)
 
 
 def _detect_interaction_type_with_keywords(text: str) -> Optional[str]:
     """
-    使用关键词匹配检测交互类型（向后兼容方法）
+    Detect interaction type using keyword matching (backward compatible method)
     
     Args:
-        text: 交互文本
+        text: Interaction text
     
     Returns:
-        交互类型或 None
+        Interaction type or None
     """
     text_lower = text.lower()
     
-    # 批评相关
+    # Criticism related
     criticism_keywords = ["stupid", "idiot", "wrong", "bad", "hate", "笨蛋", "白痴", "错误", "糟糕"]
     if any(kw in text_lower for kw in criticism_keywords):
         return "criticism"
     
-    # 表扬相关
+    # Praise related
     praise_keywords = ["good", "great", "excellent", "love", "wonderful", "棒", "优秀", "美好"]
     if any(kw in text_lower for kw in praise_keywords):
         return "praise"
     
-    # 冲突相关
+    # Conflict related
     conflict_keywords = ["fight", "argue", "disagree", "conflict", "争吵", "争论", "冲突"]
     if any(kw in text_lower for kw in conflict_keywords):
         return "conflict"
     
-    # 友好相关
+    # Friendly related
     friendly_keywords = ["thank", "appreciate", "help", "谢谢", "感谢", "帮助"]
     if any(kw in text_lower for kw in friendly_keywords):
         return "friendly"
     
-    # 帮助相关
+    # Help related
     help_keywords = ["help", "assist", "support", "帮助", "协助", "支持"]
     if any(kw in text_lower for kw in help_keywords):
         return "help"
@@ -203,16 +203,16 @@ def _detect_interaction_type_with_keywords(text: str) -> Optional[str]:
 
 def _detect_interaction_type_with_llm(text: str, llm_model) -> Optional[str]:
     """
-    使用 LLM 检测交互类型
+    Detect interaction type using LLM
     
     Args:
-        text: 交互文本
-        llm_model: LLM 模型
+        text: Interaction text
+        llm_model: LLM model
     
     Returns:
-        交互类型或 None
+        Interaction type or None
     """
-    # 构建 prompt
+    # Build prompt
     system_message = "You are an expert at analyzing social interactions. Analyze the given text and determine the interaction type."
     
     prompt = f"""Analyze the following interaction text and determine its type.
@@ -232,42 +232,42 @@ Respond with ONLY the interaction type (e.g., "criticism", "praise", "conflict",
 Do not include any other text or explanation."""
 
     try:
-        # 调用 LLM
+        # Call LLM
         if hasattr(llm_model, 'generate'):
             success, response = llm_model.generate(system_message, prompt)
             if not success:
-                # 如果 LLM 调用失败，回退到关键词匹配
+                # If LLM call fails, fall back to keyword matching
                 return _detect_interaction_type_with_keywords(text)
         else:
-            # 如果 LLM 模型没有 generate 方法，尝试直接调用
+            # If LLM model doesn't have generate method, try direct call
             try:
                 response = llm_model(prompt)
                 success = True
             except Exception:
-                # 如果调用失败，回退到关键词匹配
+                # If call fails, fall back to keyword matching
                 return _detect_interaction_type_with_keywords(text)
         
         if not success:
             return _detect_interaction_type_with_keywords(text)
         
-        # 解析 LLM 响应
+        # Parse LLM response
         response = response.strip().lower()
         
-        # 提取交互类型
+        # Extract interaction type
         valid_types = ["criticism", "praise", "conflict", "friendly", "help", "betrayal"]
         for interaction_type in valid_types:
             if interaction_type in response:
                 return interaction_type
         
-        # 如果响应是 "none" 或类似，返回 None
+        # If response is "none" or similar, return None
         if "none" in response or "null" in response:
             return None
         
-        # 如果无法解析，回退到关键词匹配
+        # If unable to parse, fall back to keyword matching
         return _detect_interaction_type_with_keywords(text)
         
     except Exception as e:
-        # 如果出现任何错误，回退到关键词匹配
+        # If any error occurs, fall back to keyword matching
         import warnings
         warnings.warn(f"LLM-based interaction type detection failed: {e}. Falling back to keyword matching.")
         return _detect_interaction_type_with_keywords(text)
@@ -275,17 +275,17 @@ Do not include any other text or explanation."""
 
 def merge_profiles(profile1: Profile, profile2: Profile, weight: float = 0.5) -> Profile:
     """
-    合并两个 Profile（用于某些场景）
+    Merge two Profiles (for certain scenarios)
     
     Args:
-        profile1: 第一个 Profile
-        profile2: 第二个 Profile
-        weight: 合并权重（0-1，0.5 表示平均）
+        profile1: First Profile
+        profile2: Second Profile
+        weight: Merge weight (0-1, 0.5 means average)
     
     Returns:
-        合并后的 Profile
+        Merged Profile
     """
-    # 静态特质不能合并，使用 profile1 的
+    # Static traits cannot be merged, use profile1's
     merged = Profile(
         static_traits=profile1.static_traits,
         emotion_vector=EmotionVector(
@@ -300,13 +300,13 @@ def merge_profiles(profile1: Profile, profile2: Profile, weight: float = 0.5) ->
         )
     )
     
-    # 合并关系（取并集，值取平均）
+    # Merge relationships (take union, average values)
     all_agent_ids = set(profile1.relations.keys()) | set(profile2.relations.keys())
     for agent_id in all_agent_ids:
         rel1 = profile1.get_relation(agent_id)
         rel2 = profile2.get_relation(agent_id)
         
-        # 合并关系类型：优先使用非 None 的值，如果两个都有则使用第一个
+        # Merge relationship type: prioritize non-None value, if both have use first one
         merged_relation_type = rel1.relation_type if rel1.relation_type is not None else rel2.relation_type
         
         merged_rel = Relation(
